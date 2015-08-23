@@ -1,0 +1,19 @@
+<html>
+<head><title>Sensor Reading Summary Report</title></head>
+<body>
+<table>
+  <tr>
+    <td>Latest reading: </td>
+    <td>{{ latest_reading_date|date:"M j, Y H:i:s" }}</td>
+  </tr>
+  <tr>
+    <td>Highest Temperature:</td>
+    <td>{{ max_temperature }}</td>
+  </tr>
+  <tr>
+    <td>Lowest Temperature:</td>
+    <td>{{ min_temperature }}</td>
+  </tr>
+</table>
+</body>
+</html>
