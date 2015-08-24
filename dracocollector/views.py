@@ -11,12 +11,23 @@ def index(request):
     return HttpResponse('First version of the index page')
 
 def reading_collector(request):
-    source_name = request.GET['sourceName']
-    temperature_reading = request.GET['temperatureReading']
-    humidity_reading = request.GET['humidityReading']
-    sensor_reading = SensorReading(source=source_name,reading_date=timezone.now(),temperature=temperature_reading,humidity=humidity_reading)
+    mandatory_parameter = 'You need to provide \'%s\' in your request.\n'
+    if 'sourceName' not in request.GET:
+        return HttpResponse(mandatory_parameter % 'sourceName')
+    if 'temperatureReading' not in request.GET:
+        return HttpResponse(mandatory_parameter % 'temperatureReading')
+    if 'humidityReading' not in request.GET:
+        return HttpResponse(mandatory_parameter % 'humidityReading')
+
+    sensor_reading = create_reading(request)
     sensor_reading.save()
     return HttpResponse('Received sensor reading from %s\n' % sensor_reading)
+
+def create_reading(request):
+    source_name = request.GET['sourceName']
+    temperature = request.GET['temperatureReading']
+    humidity = request.GET['humidityReading']
+    return SensorReading(source=source_name,reading_date=timezone.now(),temperature=temperature,humidity=humidity)
 
 def reading_post_collector(request):
     #source = request.POST.get('sourceName','unknownSource')
