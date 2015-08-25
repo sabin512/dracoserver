@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
-
+from dracocollector.models import SensorReading 
 
 class ReadingCollectorTests(TestCase):
     
@@ -12,6 +12,28 @@ class ReadingCollectorTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Received sensor reading from unitTestSource')
+        readings = SensorReading.objects.filter(source='unitTestSource')
+        self.assertEqual(len(readings), 1)
+        self.assertEqual(readings[0].temperature, 56)
+        self.assertEqual(readings[0].humidity, 44)
+        self.assertEqual(readings[0].lci1_active, False)
+        self.assertEqual(readings[0].lci2_active, False)
+
+    def test_reading_collector_with_lci2(self):
+        response = self.client.get(reverse('collector'),
+                                   {'sourceName': 'unitTestSourceWithLci2',
+                                    'temperatureReading': '11',
+                                    'humidityReading': '57',
+                                    'lci2Active': True})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Received sensor reading from unitTestSource')
+        readings = SensorReading.objects.filter(source='unitTestSourceWithLci2')
+        self.assertEqual(len(readings), 1)
+        self.assertEqual(readings[0].temperature, 11)
+        self.assertEqual(readings[0].humidity, 57)
+        self.assertEqual(readings[0].lci1_active, False)
+        self.assertEqual(readings[0].lci2_active, True)
 
     def test_reading_collector_missing_source(self):
         self.assert_missing_mandatory_parameter('sourceName',
@@ -23,7 +45,7 @@ class ReadingCollectorTests(TestCase):
                                                 {'sourceName': 'unitTestSource',
                                                  'humidityReading': '44'})
 
-    def test_reading_collector_missing_temperature(self):
+    def test_reading_collector_missing_humidity(self):
         self.assert_missing_mandatory_parameter('humidityReading',
                                                 {'sourceName': 'unitTestSource',
                                                  'temperatureReading': '23'})
