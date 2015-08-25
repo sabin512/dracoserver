@@ -7,27 +7,41 @@ from django.http import HttpResponse
 from django.utils import timezone
 from .models import SensorReading
 
+SOURCE_PARAM = 'sourceName'
+TEMPERATURE_PARAM = 'temperatureReading'
+HUMIDITY_PARAM = 'humidityReading'
+LCI1_PARAM = 'lci1Active'
+LCI2_PARAM = 'lci2Active'
+
 def index(request):
     return HttpResponse('First version of the index page')
 
 def reading_collector(request):
-    mandatory_parameter = 'You need to provide \'%s\' in your request.\n'
-    if 'sourceName' not in request.GET:
-        return HttpResponse(mandatory_parameter % 'sourceName')
-    if 'temperatureReading' not in request.GET:
-        return HttpResponse(mandatory_parameter % 'temperatureReading')
-    if 'humidityReading' not in request.GET:
-        return HttpResponse(mandatory_parameter % 'humidityReading')
+    mandatory_parameter = "You need to provide '%s' in your request.\n"
+    if SOURCE_PARAM not in request.GET:
+        return HttpResponse(mandatory_parameter % SOURCE_PARAM)
+    if TEMPERATURE_PARAM not in request.GET:
+        return HttpResponse(mandatory_parameter % TEMPERATURE_PARAM)
+    if HUMIDITY_PARAM not in request.GET:
+        return HttpResponse(mandatory_parameter % HUMIDITY_PARAM)
 
     sensor_reading = create_reading(request)
     sensor_reading.save()
     return HttpResponse('Received sensor reading from %s\n' % sensor_reading)
 
 def create_reading(request):
-    source_name = request.GET['sourceName']
-    temperature = request.GET['temperatureReading']
-    humidity = request.GET['humidityReading']
-    return SensorReading(source=source_name,reading_date=timezone.now(),temperature=temperature,humidity=humidity)
+    reading = SensorReading()
+    reading.source = request.GET[SOURCE_PARAM]
+    reading.reading_date = timezone.now()
+    reading.temperature = request.GET[TEMPERATURE_PARAM]
+    reading.humidity = request.GET[HUMIDITY_PARAM]
+    if LCI1_PARAM in request.GET:
+        reading.lci1_active = request.GET[LCI1_PARAM]
+
+    if LCI2_PARAM in request.GET:
+        reading.lci2_active = request.GET[LCI2_PARAM]
+
+    return reading 
 
 def reading_post_collector(request):
     #source = request.POST.get('sourceName','unknownSource')
