@@ -11,4 +11,6 @@ class SensorReading(models.Model):
     lci2_active = models.BooleanField(default=False)
     
     def __str__(self):
-        return '%s on %s' % (self.source, self.reading_date.strftime('%c'))
+        return '%s on %s data[t=%s, h=%s, lci1=%s, lci2=%s]' % (self.source, self.reading_date.strftime('%c'),
+                                                               self.temperature, self.humidity,
+                                                               self.lci1_active, self.lci2_active)

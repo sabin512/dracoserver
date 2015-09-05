@@ -8,10 +8,10 @@ from django.utils import timezone
 from .models import SensorReading
 
 SOURCE_PARAM = 'sourceName'
-TEMPERATURE_PARAM = 'temperatureReading'
-HUMIDITY_PARAM = 'humidityReading'
-LCI1_PARAM = 'lci1Active'
-LCI2_PARAM = 'lci2Active'
+TEMPERATURE_PARAM = 'temperature'
+HUMIDITY_PARAM = 'humidity'
+LCI1_PARAM = 'lci1'
+LCI2_PARAM = 'lci2'
 
 def index(request):
     return HttpResponse('First version of the index page')
@@ -36,12 +36,15 @@ def create_reading(request):
     reading.temperature = request.GET[TEMPERATURE_PARAM]
     reading.humidity = request.GET[HUMIDITY_PARAM]
     if LCI1_PARAM in request.GET:
-        reading.lci1_active = request.GET[LCI1_PARAM]
+        reading.lci1_active = get_boolean_from_string(request.GET[LCI1_PARAM])
 
     if LCI2_PARAM in request.GET:
-        reading.lci2_active = request.GET[LCI2_PARAM]
+        reading.lci2_active = get_boolean_from_string(request.GET[LCI2_PARAM])
 
     return reading 
+
+def get_boolean_from_string(string_value):
+    return string_value.lower() in ("yes", "true", "t", "1")
 
 def reading_post_collector(request):
     #source = request.POST.get('sourceName','unknownSource')

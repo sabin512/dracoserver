@@ -7,8 +7,8 @@ class ReadingCollectorTests(TestCase):
     def test_reading_collector(self):
         response = self.client.get(reverse('collector'),
                                    {'sourceName': 'unitTestSource',
-                                    'temperatureReading': '56',
-                                    'humidityReading': '44'})
+                                    'temperature': '56',
+                                    'humidity': '44'})
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Received sensor reading from unitTestSource')
@@ -22,9 +22,9 @@ class ReadingCollectorTests(TestCase):
     def test_reading_collector_with_lci2(self):
         response = self.client.get(reverse('collector'),
                                    {'sourceName': 'unitTestSourceWithLci2',
-                                    'temperatureReading': '11',
-                                    'humidityReading': '57',
-                                    'lci2Active': True})
+                                    'temperature': '11',
+                                    'humidity': '57',
+                                    'lci2': True})
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Received sensor reading from unitTestSource')
@@ -37,18 +37,18 @@ class ReadingCollectorTests(TestCase):
 
     def test_reading_collector_missing_source(self):
         self.assert_missing_mandatory_parameter('sourceName',
-                                                {'temperatureReading': '56',
-                                                 'humidityReading': '44'})
+                                                {'temperature': '56',
+                                                 'humidity': '44'})
 
     def test_reading_collector_missing_temperature(self):
-        self.assert_missing_mandatory_parameter('temperatureReading',
+        self.assert_missing_mandatory_parameter('temperature',
                                                 {'sourceName': 'unitTestSource',
-                                                 'humidityReading': '44'})
+                                                 'humidity': '44'})
 
     def test_reading_collector_missing_humidity(self):
-        self.assert_missing_mandatory_parameter('humidityReading',
+        self.assert_missing_mandatory_parameter('humidity',
                                                 {'sourceName': 'unitTestSource',
-                                                 'temperatureReading': '23'})
+                                                 'temperature': '23'})
 
     def assert_missing_mandatory_parameter(self, parameter, existing_parameters):
         response = self.client.get(reverse('collector'), existing_parameters)
