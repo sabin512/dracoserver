@@ -1,19 +1,29 @@
 <html>
-<head><title>Sensor Reading Summary Report</title></head>
+	<head>
+		<title>Sensor Reading Summary Report</title>
+		<link href="../../css/shift.css" rel="stylesheet">
+		<link href="../../css/bootstrap.css" rel="stylesheet">
+		<link href="../../css/main.css" rel="stylesheet">
+	</head>
+
 <body>
-<table>
-  <tr>
-    <td>Latest reading: </td>
-    <td>{{ latest_reading_date|date:"M j, Y H:i:s" }}</td>
-  </tr>
-  <tr>
-    <td>Highest Temperature:</td>
-    <td>{{ max_temperature }}</td>
-  </tr>
-  <tr>
-    <td>Lowest Temperature:</td>
-    <td>{{ min_temperature }}</td>
-  </tr>
-</table>
+	<div class="nav">
+		<div class="container">
+			<ul class="pull-left">
+				<li><a href="../../index.html">Home</a></li>
+				<li><a href="../../projects.html">Projects</a></li>
+				<li><a href="../../downloads.html">Downloads</a></li>
+				<li><a href="../../blog.html">Blog</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="jumbotron">
+		<div class="container">
+			<h3>Draco Collector: Summary Report</h3>
+			<p>Latest reading: <span class="dataValue">{{ latest_reading_date|date:"M j, Y H:i:s" }}</span></p>
+			<p>Highest Temperature: <span class="dataValue">{{ max_temperature }}</span></p>
+			<p>Lowest Temperature: <span class="dataValue">{{ min_temperature }}</span></p>
+</div>
+</div>
 </body>
 </html>

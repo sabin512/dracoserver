@@ -9,7 +9,8 @@ class SensorReadingAdmin(admin.ModelAdmin):
             ('Reading Data',         {'fields':['temperature','humidity','lci1_active','lci2_active']}),
     ]
 
-    list_filter = ['reading_date']
+    list_filter = ['reading_date','lci1_active', 'lci2_active']
+    list_display = ['source', 'reading_date', 'temperature', 'humidity', 'lci1_active', 'lci2_active']
     search_fields = ['source']
 
 admin.site.register(SensorReading, SensorReadingAdmin)
