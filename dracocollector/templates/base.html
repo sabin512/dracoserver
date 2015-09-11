@@ -1,0 +1,26 @@
+<html>
+	<head>
+		<title>{% block title %}Draco Collector{% endblock %}</title>
+		<link href="../../css/shift.css" rel="stylesheet">
+		<link href="../../css/bootstrap.css" rel="stylesheet">
+		<link href="../../css/main.css" rel="stylesheet">
+	</head>
+
+<body>
+	<div class="nav">
+		<div class="container">
+			<ul class="pull-left">
+				<li><a href="../../index.html">Home</a></li>
+				<li><a href="../../projects.html">Projects</a></li>
+				<li><a href="../../downloads.html">Downloads</a></li>
+				<li><a href="../../blog.html">Blog</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="jumbotron">
+		<div class="container">
+			{% block main_container %}{% endblock %}
+		</div>
+	</div>
+</body>
+</html>

@@ -4,9 +4,11 @@ from django.db.models import Max, Min
 # Create your views here.
 from django.http import HttpResponse
 from django.http import StreamingHttpResponse
+from django.http import HttpResponseRedirect
 
 from django.utils import timezone
 from .models import SensorReading
+from .forms import ExportPrepareForm
 
 import csv
 
@@ -66,12 +68,24 @@ def report(request):
                'min_temperature': min_temperature['temperature__min'],}
     return render(request, 'report.html', context)
 
+
+def export_csv(request):
+    if request.method == 'POST':
+        form = ExportPrepareForm(request.POST)
+        if form.is_valid():
+            return export_data(form)
+    else:
+        form = ExportPrepareForm()
+
+    return render(request, 'prepareExport.html', {'form': form})
+
 class SensorReadingCSVWriter(object):
     def write(self, value):
         return value 
 
-def export_csv(request):
-    all_readings = SensorReading.objects.all()
+def export_data(form):
+    source_to_export = form.cleaned_data['source_name']
+    all_readings = SensorReading.objects.filter(source=source_to_export)
     pseudo_buffer = SensorReadingCSVWriter()
     writer = csv.writer(pseudo_buffer)
     response = StreamingHttpResponse((writer.writerow(get_reading_data_as_list(reading)) for reading in all_readings),
