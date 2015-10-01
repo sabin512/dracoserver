@@ -35,7 +35,7 @@ def reading_post_collector(request):
     unescapedData = webhookJsonData['data'].replace('&quot;','"')
     jsonData = json.loads(unescapedData)
 
-    missing_fields = check_missing_fields(jsonData)
+    missing_fields = find_missing_fields(jsonData)
     if missing_fields:
         return create_missing_fields_response(missing_fields)
 
@@ -44,7 +44,7 @@ def reading_post_collector(request):
     return HttpResponse('Received sensor reading through POST')
 
 def reading_collector(request):
-    missing_fields = check_missing_fields(request.GET)
+    missing_fields = find_missing_fields(request.GET)
     if missing_fields:
         return create_missing_fields_response(missing_fields)
 
@@ -55,12 +55,8 @@ def reading_collector(request):
 def create_missing_fields_response(missing_fields):
     return HttpResponse('You need to provide the fields: %s\n' % missing_fields)
 
-def check_missing_fields(data):
-    missing_fields = list()
-    for field in MANDATORY_FIELDS:
-        if field not in data:
-            missing_fields.append(field)
-    return missing_fields
+def find_missing_fields(data):
+    return [p for p in MANDATORY_FIELDS if p not in data]
 
 def create_reading(request_params):
     reading = SensorReading()
