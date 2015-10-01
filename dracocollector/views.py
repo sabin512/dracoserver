@@ -1,4 +1,5 @@
 import json
+from datetime import date
 from django.shortcuts import render
 from django.db.models import Max, Min
 from django.views.decorators.csrf import csrf_exempt
@@ -88,7 +89,8 @@ def export_csv(request):
         if form.is_valid():
             return export_data(form)
     else:
-        form = ExportPrepareForm()
+        default_start_date = date.today()
+        form = ExportPrepareForm(initial={'start_date': default_start_date})
 
     return render(request, 'prepareExport.html', {'form': form})
 
@@ -98,7 +100,8 @@ class SensorReadingCSVWriter(object):
 
 def export_data(form):
     source_to_export = form.cleaned_data['source_name']
-    all_readings = SensorReading.objects.filter(source=source_to_export)
+    start_date_to_export = form.cleaned_data['start_date']
+    all_readings = SensorReading.objects.filter(source=source_to_export,reading_date__gte=start_date_to_export)
     pseudo_buffer = SensorReadingCSVWriter()
     writer = csv.writer(pseudo_buffer)
     response = StreamingHttpResponse((writer.writerow(get_reading_data_as_list(reading)) for reading in all_readings),
