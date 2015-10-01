@@ -3,7 +3,6 @@ from django.core.urlresolvers import reverse
 from dracocollector.models import SensorReading 
 
 class ReadingCollectorTests(TestCase):
-    
     def test_reading_collector(self):
         response = self.client.get(reverse('collector'),
                                    {'sourceName': 'unitTestSource',
@@ -53,6 +52,6 @@ class ReadingCollectorTests(TestCase):
     def assert_missing_mandatory_parameter(self, parameter, existing_parameters):
         response = self.client.get(reverse('collector'), existing_parameters)
         self.assertEqual(response.status_code, 200)
-        mandatory_parameter = "You need to provide '%s' in your request.\n" % parameter
+        mandatory_parameter = "You need to provide the fields: ['%s']\n" % parameter
         self.assertContains(response, mandatory_parameter)
 

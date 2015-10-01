@@ -21,40 +21,46 @@ HUMIDITY_PARAM = 'humidity'
 LCI1_PARAM = 'lci1'
 LCI2_PARAM = 'lci2'
 
+MANDATORY_FIELDS = [SOURCE_PARAM, TEMPERATURE_PARAM, HUMIDITY_PARAM]
+
 def index(request):
     return HttpResponse('First version of the index page')
 
 @csrf_exempt
 def reading_post_collector(request):
-    mandatory_parameter = "You need to provide '%s' in your request.\n"
     webhookJsonData = json.loads(request.body.decode('utf-8'))
+    if 'data' not in webhookJsonData:
+        return HttpResponse("JSON data needs to be in JSON field 'data'\n")
     #this is bullshit because html.unescape doesn't exist in python 3.2
     unescapedData = webhookJsonData['data'].replace('&quot;','"')
     jsonData = json.loads(unescapedData)
 
-    if SOURCE_PARAM not in jsonData:
-        return HttpResponse(mandatory_parameter % SOURCE_PARAM)
-    if TEMPERATURE_PARAM not in jsonData:
-        return HttpResponse(mandatory_parameter % TEMPERATURE_PARAM)
-    if HUMIDITY_PARAM not in jsonData:
-        return HttpResponse(mandatory_parameter % HUMIDITY_PARAM)
+    missing_fields = check_missing_fields(jsonData)
+    if missing_fields:
+        return create_missing_fields_response(missing_fields)
 
     sensor_reading = create_reading(jsonData)
     sensor_reading.save()
     return HttpResponse('Received sensor reading through POST')
 
 def reading_collector(request):
-    mandatory_parameter = "You need to provide '%s' in your request.\n"
-    if SOURCE_PARAM not in request.GET:
-        return HttpResponse(mandatory_parameter % SOURCE_PARAM)
-    if TEMPERATURE_PARAM not in request.GET:
-        return HttpResponse(mandatory_parameter % TEMPERATURE_PARAM)
-    if HUMIDITY_PARAM not in request.GET:
-        return HttpResponse(mandatory_parameter % HUMIDITY_PARAM)
+    missing_fields = check_missing_fields(request.GET)
+    if missing_fields:
+        return create_missing_fields_response(missing_fields)
 
     sensor_reading = create_reading(request.GET)
     sensor_reading.save()
     return HttpResponse('Received sensor reading from %s\n' % sensor_reading)
+
+def create_missing_fields_response(missing_fields):
+    return HttpResponse('You need to provide the fields: %s\n' % missing_fields)
+
+def check_missing_fields(data):
+    missing_fields = list()
+    for field in MANDATORY_FIELDS:
+        if field not in data:
+            missing_fields.append(field)
+    return missing_fields
 
 def create_reading(request_params):
     reading = SensorReading()
