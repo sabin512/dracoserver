@@ -16,12 +16,13 @@ from .forms import ExportPrepareForm
 import csv
 
 SOURCE_PARAM = 'sourceName'
+FW_VERSION = 'fwVersion'
 TEMPERATURE_PARAM = 'temperature'
 HUMIDITY_PARAM = 'humidity'
 LCI1_PARAM = 'lci1'
 LCI2_PARAM = 'lci2'
 
-MANDATORY_FIELDS = [SOURCE_PARAM, TEMPERATURE_PARAM, HUMIDITY_PARAM]
+MANDATORY_FIELDS = [SOURCE_PARAM, FW_VERSION, TEMPERATURE_PARAM, HUMIDITY_PARAM]
 
 def index(request):
     return HttpResponse('First version of the index page')
@@ -65,6 +66,7 @@ def check_missing_fields(data):
 def create_reading(request_params):
     reading = SensorReading()
     reading.source = request_params[SOURCE_PARAM]
+    reading.fw_version = request_params[FW_VERSION]
     reading.reading_date = timezone.now()
     reading.temperature = request_params[TEMPERATURE_PARAM]
     reading.humidity = request_params[HUMIDITY_PARAM]

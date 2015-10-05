@@ -6,6 +6,7 @@ class ReadingCollectorTests(TestCase):
     def test_reading_collector(self):
         response = self.client.get(reverse('collector'),
                                    {'sourceName': 'unitTestSource',
+                                    'fwVersion': '0.1',
                                     'temperature': '56',
                                     'humidity': '44'})
 
@@ -21,6 +22,7 @@ class ReadingCollectorTests(TestCase):
     def test_reading_collector_with_lci2(self):
         response = self.client.get(reverse('collector'),
                                    {'sourceName': 'unitTestSourceWithLci2',
+                                    'fwVersion': '0.1',
                                     'temperature': '11',
                                     'humidity': '57',
                                     'lci2': True})
@@ -36,17 +38,25 @@ class ReadingCollectorTests(TestCase):
 
     def test_reading_collector_missing_source(self):
         self.assert_missing_mandatory_parameter('sourceName',
-                                                {'temperature': '56',
+                                                {'fwVersion': '0.1',
+                                                 'temperature': '56',
+                                                 'humidity': '44'})
+    def test_reading_collector_missing_version(self):
+        self.assert_missing_mandatory_parameter('fwVersion',
+                                                {'sourceName': 'unitTestSourceMissingVersion',
+                                                 'temperature': '56',
                                                  'humidity': '44'})
 
     def test_reading_collector_missing_temperature(self):
         self.assert_missing_mandatory_parameter('temperature',
                                                 {'sourceName': 'unitTestSource',
+                                                 'fwVersion': '0.1',
                                                  'humidity': '44'})
 
     def test_reading_collector_missing_humidity(self):
         self.assert_missing_mandatory_parameter('humidity',
                                                 {'sourceName': 'unitTestSource',
+                                                 'fwVersion': '0.1',
                                                  'temperature': '23'})
 
     def assert_missing_mandatory_parameter(self, parameter, existing_parameters):
