@@ -1,5 +1,6 @@
 import json
 from datetime import date
+from datetime import timedelta
 from django.shortcuts import render
 from django.db.models import Max, Min
 from django.views.decorators.csrf import csrf_exempt
@@ -78,12 +79,24 @@ def get_boolean_from_string(string_value):
     return string_value.lower() in ("yes", "true", "t", "1")
 
 def report(request):
-    latest_reading_date = SensorReading.objects.all().aggregate(Max('reading_date'))
-    max_temperature = SensorReading.objects.all().aggregate(Max('temperature'))
-    min_temperature = SensorReading.objects.all().aggregate(Min('temperature'))
-    context = {'latest_reading_date': latest_reading_date['reading_date__max'],
-               'max_temperature': max_temperature['temperature__max'],
-               'min_temperature': min_temperature['temperature__min'],}
+    source_name = request.GET[SOURCE_PARAM] 
+    all_data = SensorReading.objects.filter(source=source_name).aggregate(Max('temperature'), Min('temperature'), Max('reading_date'), Max('humidity'), Min('humidity'))
+
+    recent_start = date.today() - timedelta(days=2)
+    recent_end = date.today()
+
+    recent_data = SensorReading.objects.filter(source=source_name, reading_date__range=[recent_start, recent_end]).aggregate(Max('temperature'), Min('temperature'), Max('humidity'), Min('humidity'))
+    
+
+    context = {'latest_reading_date': all_data['reading_date__max'],
+               'max_temperature': all_data['temperature__max'],
+               'min_temperature': all_data['temperature__min'],
+               'max_humidity': all_data['humidity__max'],
+               'min_humidity': all_data['humidity__min'],
+               'recent_max_temperature': recent_data['temperature__max'],
+               'recent_min_temperature': recent_data['temperature__min'],
+               'recent_max_humidity': recent_data['humidity__max'],
+               'recent_min_humidity': recent_data['humidity__min']}
     return render(request, 'report.html', context)
 
 

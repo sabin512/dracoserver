@@ -1,8 +1,28 @@
 {% extends "base.html" %}
-{% block title %}Draco Collector: Summary Report{% endblock %}
+{% load humanize %}
+{% block title %}Photon Data Collector: Summary Report{% endblock %}
 {% block main_container %}
-<h3>Draco Collector: Summary Report</h3>
-			<p>Latest reading: <span class="dataValue">{{ latest_reading_date|date:"M j, Y H:i:s" }}</span></p>
-			<p>Highest Temperature: <span class="dataValue">{{ max_temperature }}</span></p>
-			<p>Lowest Temperature: <span class="dataValue">{{ min_temperature }}</span></p>
+<h3>Photon Data Collector: Summary Report</h3>
+<table border="0">
+	<tr><td>Latest reading </td><td><span class="dataValue">{{ latest_reading_date|date:"M j, Y H:i:s" }}</span></td><td>&nbsp;</td></tr>
+	<tr><th colspan="3">Last 48 hours</th></tr>
+	<tr><td>&nbsp;</td><td>Lowest</td><td>Highest</td></tr>
+	<tr><td>Temperature</td>
+	    <td><span class="dataValue">{{ recent_min_temperature|floatformat:1 }}&#176;</span></td>
+	    <td><span class="dataValue">{{ recent_max_temperature|floatformat:1 }}&#176;</span></td>
+	</tr>
+	<tr><td>Humidity</td>
+	    <td><span class="dataValue">{{ recent_min_humidity|floatformat:1 }}%</span></td>
+	    <td><span class="dataValue">{{ recent_max_humidity|floatformat:1 }}%</span></td>
+	</tr>
+	<tr><th colspan="3">All time stats</th></tr>
+	<tr><td>Temperature</td>
+            <td><span class="dataValue">{{ min_temperature|floatformat:1 }}&#176;</span></td>
+	    <td><span class="dataValue">{{ max_temperature|floatformat:1 }}&#176;</span></td>
+	</tr>
+	<tr><td>Humidity</td>
+	    <td><span class="dataValue">{{ min_humidity|floatformat:1 }}%</span></td>
+	    <td><span class="dataValue">{{ max_humidity|floatformat:1 }}%</span></td>
+	</tr>
+</table>
 {% endblock %}
