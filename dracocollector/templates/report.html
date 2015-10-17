@@ -1,28 +1,56 @@
+<!--google-analytics tracking code -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-68799712-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!--google-analytics tracking code -->
+
 {% extends "base.html" %}
 {% load humanize %}
 {% block title %}Photon Data Collector: Summary Report{% endblock %}
 {% block main_container %}
-<h3>Photon Data Collector: Summary Report</h3>
+
+<h2>Photon Data Report</h2>
 <table border="0">
-	<tr><td>Latest reading </td><td><span class="dataValue">{{ latest_reading_date|date:"M j, Y H:i:s" }}</span></td><td>&nbsp;</td></tr>
-	<tr><th colspan="3">Last 48 hours</th></tr>
-	<tr><td>&nbsp;</td><td>Lowest</td><td>Highest</td></tr>
-	<tr><td>Temperature</td>
-	    <td><span class="dataValue">{{ recent_min_temperature|floatformat:1 }}&#176;</span></td>
-	    <td><span class="dataValue">{{ recent_max_temperature|floatformat:1 }}&#176;</span></td>
-	</tr>
-	<tr><td>Humidity</td>
-	    <td><span class="dataValue">{{ recent_min_humidity|floatformat:1 }}%</span></td>
-	    <td><span class="dataValue">{{ recent_max_humidity|floatformat:1 }}%</span></td>
-	</tr>
-	<tr><th colspan="3">All time stats</th></tr>
-	<tr><td>Temperature</td>
-            <td><span class="dataValue">{{ min_temperature|floatformat:1 }}&#176;</span></td>
-	    <td><span class="dataValue">{{ max_temperature|floatformat:1 }}&#176;</span></td>
-	</tr>
-	<tr><td>Humidity</td>
-	    <td><span class="dataValue">{{ min_humidity|floatformat:1 }}%</span></td>
-	    <td><span class="dataValue">{{ max_humidity|floatformat:1 }}%</span></td>
-	</tr>
+  <tr><td>Latest reading: </td><td><span class="dataValue">{{ latest_reading_date|date:"M j, Y H:i:s" }}</span></td><td>&nbsp;</td></tr>
+  <tr><td>Photon info: </td><td><span class="dataValue">Uptime:&nbsp;&nbsp;{{ uptime_data }}&nbsp;(hh:mm:ss)</span></td><td>&nbsp;</td></tr>
+<tr><td>&nbsp;</td><td><span class="dataValue">Temperature:&nbsp;&nbsp;{{ curr_temperature }}&#176;</span></td><td>&nbsp;</td></tr>
+<tr><td>&nbsp;</td><td><span class="dataValue">Humidity:&nbsp;&nbsp;{{ curr_humidity }}%</span></td><td>&nbsp;</td></tr>
 </table>
+<br>
+  <table border="0", style="width:60%">
+	<tr>
+		<td>&nbsp;</td>
+		<th colspan="2">Last 48 hours</th>
+		<th colspan="2">All time stats</th>
+	</tr>
+
+		<tr>
+			<td>&nbsp;</td>
+			<td>Lowest</td>
+			<td>Highest</td>
+			<td>Lowest</td>
+			<td>Highest</td>
+		</tr>
+
+			<tr><td style="font-weight: bold">Temperature</td>
+				<td><span class="dataValue">{{ recent_min_temperature|floatformat:1 }}&#176;</span></td>
+				<td><span class="dataValue">{{ recent_max_temperature|floatformat:1 }}&#176;</span></td>
+			      	<td><span class="dataValue">{{ min_temperature|floatformat:1 }}&#176;</span></td>
+	    			<td><span class="dataValue">{{ max_temperature|floatformat:1 }}&#176;</span></td>
+			</tr>
+
+			<tr>
+				<td style="font-weight: bold">Humidity</td>
+				<td><span class="dataValue">{{ recent_min_humidity|floatformat:1 }}%</span></td>
+				<td><span class="dataValue">{{ recent_max_humidity|floatformat:1 }}%</span></td>
+				<td><span class="dataValue">{{ min_humidity|floatformat:1 }}%</span></td>
+				<td><span class="dataValue">{{ max_humidity|floatformat:1 }}%</span></td>
+			</tr>
+	</table>
+
 {% endblock %}

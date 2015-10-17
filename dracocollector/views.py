@@ -1,8 +1,11 @@
 import json
+import requests
 from datetime import date
+from datetime import datetime
 from datetime import timedelta
 from django.shortcuts import render
 from django.db.models import Max, Min
+from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
@@ -12,6 +15,7 @@ from django.http import HttpResponseRedirect
 
 from django.utils import timezone
 from .models import SensorReading
+from .models import TelemetryProbe
 from .forms import ExportPrepareForm
 
 import csv
@@ -22,6 +26,8 @@ TEMPERATURE_PARAM = 'temperature'
 HUMIDITY_PARAM = 'humidity'
 LCI1_PARAM = 'lci1'
 LCI2_PARAM = 'lci2'
+PULL_DATA_URL = 'https://api.particle.io/v1/devices/%s/%s?access_token=%s'
+PULL_REQUEST_HEADERS={'content-type': 'application/x-www-form-urlencoded'}
 
 MANDATORY_FIELDS = [SOURCE_PARAM, FW_VERSION, TEMPERATURE_PARAM, HUMIDITY_PARAM]
 
@@ -73,22 +79,44 @@ def create_reading(request_params):
     if LCI2_PARAM in request_params:
         reading.lci2_active = get_boolean_from_string(request_params[LCI2_PARAM])
 
-    return reading 
+    return reading
 
 def get_boolean_from_string(string_value):
     return string_value.lower() in ("yes", "true", "t", "1")
 
 def report(request):
-    source_name = request.GET[SOURCE_PARAM] 
-    all_data = SensorReading.objects.filter(source=source_name).aggregate(Max('temperature'), Min('temperature'), Max('reading_date'), Max('humidity'), Min('humidity'))
+    if SOURCE_PARAM not in request.GET:
+        return HttpResponse('You need to specify a telemetry probe name using parameter %s' % SOURCE_PARAM)
+
+    source_name = request.GET[SOURCE_PARAM]
+    try:
+        probe = TelemetryProbe.objects.get(name=source_name)
+    except ObjectDoesNotExist:
+        return HttpResponse('Telemetry probe %s is not registered, no data will be reported' % source_name)
+
+    all_data = SensorReading.objects.filter(source=source_name).aggregate(Max('temperature'), 
+                                                                          Min('temperature'),
+                                                                          Max('reading_date'),
+                                                                          Max('humidity'),
+                                                                          Min('humidity'))
 
     recent_start = date.today() - timedelta(days=2)
     recent_end = date.today()
 
-    recent_data = SensorReading.objects.filter(source=source_name, reading_date__range=[recent_start, recent_end]).aggregate(Max('temperature'), Min('temperature'), Max('humidity'), Min('humidity'))
-    
+    recent_data = SensorReading.objects.filter(source=source_name,
+                                               reading_date__range=[recent_start, recent_end]).aggregate(Max('temperature'),
+                                                                                                         Min('temperature'),
+                                                                                                         Max('humidity'),
+                                                                                                         Min('humidity'))
+
+    uptime = retrieve_uptime(probe)
+    temperature = pull_probe_data(probe, 'temp') 
+    humidity = pull_probe_data(probe, 'humidity') 
 
     context = {'latest_reading_date': all_data['reading_date__max'],
+               'uptime_data': uptime,
+               'curr_temperature': temperature,
+               'curr_humidity': humidity,
                'max_temperature': all_data['temperature__max'],
                'min_temperature': all_data['temperature__min'],
                'max_humidity': all_data['humidity__max'],
@@ -99,6 +127,17 @@ def report(request):
                'recent_min_humidity': recent_data['humidity__min']}
     return render(request, 'report.html', context)
 
+def pull_probe_data(probe, field_name):
+    complete_pull_url = PULL_DATA_URL % (probe.device_id, field_name, probe.access_token)
+    response = requests.get(complete_pull_url, PULL_REQUEST_HEADERS)
+    if response.status_code != 200:
+       return 'Failed to retrieve %s' % field_name
+    return response.json()['result']
+
+def retrieve_uptime(probe):
+    start_date = datetime.fromtimestamp(pull_probe_data(probe, 'startTime'))
+    time_lapsed = str(datetime.now() - start_date).split('.')[0]
+    return str(time_lapsed)
 
 def export_csv(request):
     if request.method == 'POST':
@@ -113,7 +152,7 @@ def export_csv(request):
 
 class SensorReadingCSVWriter(object):
     def write(self, value):
-        return value 
+        return value
 
 def export_data(form):
     source_to_export = form.cleaned_data['source_name']
