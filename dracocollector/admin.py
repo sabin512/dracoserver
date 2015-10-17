@@ -2,6 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 from .models import SensorReading
+from .models import TelemetryProbe
 
 class SensorReadingAdmin(admin.ModelAdmin):
     fieldsets = [
@@ -14,3 +15,4 @@ class SensorReadingAdmin(admin.ModelAdmin):
     search_fields = ['source']
 
 admin.site.register(SensorReading, SensorReadingAdmin)
+admin.site.register(TelemetryProbe)

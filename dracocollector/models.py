@@ -19,3 +19,11 @@ class SensorReading(models.Model):
                                                                         self.humidity,
                                                                         self.lci1_active, 
                                                                         self.lci2_active)
+
+class TelemetryProbe(models.Model):
+    name = models.CharField(max_length=100)
+    device_id = models.CharField(max_length=50)
+    access_token = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
