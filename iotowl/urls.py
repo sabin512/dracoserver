@@ -17,6 +17,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 
 urlpatterns = [
-    url('admin/', admin.site.urls),
-    url('dracocollector/', include('dracocollector.urls')),
+    #setting this URL when the admin module cannot be found crashes all other URLs
+    #url(r'^admin/', include('admin.site.urls')),
+    url(r'^dracocollector/', include('dracocollector.urls')),
 ]

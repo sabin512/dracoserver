@@ -25,12 +25,16 @@ COPY ./landing-page/js/ /var/www/html/js/
 COPY ./landing-page/index.html /var/www/html/index.html
 
 #Install django iotowl project
-COPY ./iotowl/ /var/www/iotowl/
-COPY ./static/ /var/www/iotowl/
-COPY ./templates/ /var/www/iotowl/
+COPY --chown=www-data:www-data ./iotowl/ /var/www/iotowl/iotowl/
+COPY --chown=www-data:www-data ./static/ /var/www/iotowl/static/
+COPY --chown=www-data:www-data ./templates/ /var/www/iotowl/templates/
+
+#Install the database (there has to be a better way.
+#Right now all data will be lost once the container is shut down.
+COPY --chown=www-data:www-data ./db.sqlite3 /var/www/iotowl/
 
 #Install dracocollector django app 
-COPY ./dracocollector/ /var/www/iotowl/
+COPY --chown=www-data:www-data ./dracocollector/ /var/www/iotowl/dracocollector/
 
 EXPOSE 8080
 CMD apache2ctl -D FOREGROUND
