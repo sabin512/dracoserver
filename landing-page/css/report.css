@@ -1,0 +1,81 @@
+.report {
+  background-color: #f7f7f7;
+}
+
+.report .more-data {
+  background-color: #f7f7f7;
+  height: 500;
+}
+
+#status {
+  visibility: hidden;
+}
+
+#status-online {
+	border-radius: 5px;
+	background-color: #272727;
+  padding: 1px;
+	height: 22px;
+  width: 76px;
+	text-align: center;
+  font-weight: bold;
+  color: #98E131;
+}
+
+#status-offline {
+	border-radius: 5px;
+	background-color: #272727;
+  padding: 1px;
+	height: 22px;
+  width: 76px;
+	text-align: center;
+  font-weight: bold;
+  color: #98E131;
+}
+
+.report a {
+  /*border: 5px solid red;*/
+  font-size: 20px;
+  color: #A4C379;
+  text-decoration: none;
+}
+
+.report a:hover {
+  color: #A4C379;
+  font-weight: bold;
+}
+.report .container {
+  background-color: #2D3037;
+  height: auto;
+  font-family: 'Shift', sans-serif;
+}
+
+.report h2 {
+  font-weight: bold;
+  color: #C39965;
+}
+
+.report h3 {
+  font-weight: bold;
+  color: #C39965;
+  text-align: center;
+}
+
+th {
+  color: #C39965;
+  font-size: 14pt;
+  padding: 5px;
+  text-align: left;
+  font-weight: bold;
+}
+
+td {
+  color: #ABB0BE;
+  font-size: 14pt;
+  padding: 5px;
+}
+
+span.dataValue {
+	color: #C86B72;
+  font-size: 14pt;
+}

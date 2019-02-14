@@ -94,7 +94,7 @@ def report(request):
     except ObjectDoesNotExist:
         return HttpResponse('Telemetry probe %s is not registered, no data will be reported' % source_name)
 
-    all_data = SensorReading.objects.filter(source=source_name).aggregate(Max('temperature'), 
+    all_data = SensorReading.objects.filter(source=source_name).aggregate(Max('temperature'),
                                                                           Min('temperature'),
                                                                           Max('reading_date'),
                                                                           Max('humidity'),
@@ -110,11 +110,18 @@ def report(request):
                                                                                                          Min('humidity'))
 
     uptime = retrieve_uptime(probe)
-    temperature = pull_probe_data(probe, 'temp') 
-    humidity = pull_probe_data(probe, 'humidity') 
+    temperature = pull_probe_data(probe, 'temp')
+    humidity = pull_probe_data(probe, 'humidity')
+    counter = pull_probe_data(probe, 'rCounter')
+    lci1reading = pull_probe_data(probe, 'lci1')
+    lci2reading = pull_probe_data(probe, 'lci2')
 
     context = {'latest_reading_date': all_data['reading_date__max'],
                'uptime_data': uptime,
+               'source_name': source_name,
+               'restart_counter': counter,
+               'lci1_reading': lci1reading,
+               'lci2_reading': lci2reading,
                'curr_temperature': temperature,
                'curr_humidity': humidity,
                'max_temperature': all_data['temperature__max'],
@@ -134,10 +141,41 @@ def pull_probe_data(probe, field_name):
        return 'Failed to retrieve %s' % field_name
     return response.json()['result']
 
+@csrf_exempt
+def get_uptime(request):
+    if SOURCE_PARAM not in request.GET:
+        return HttpResponse('No probe name specified using %s parameter.' % SOURCE_PARAM)
+    source_name = request.GET[SOURCE_PARAM]
+    try:
+        probe = TelemetryProbe.objects.get(name=source_name)
+    except ObjectDoesNotExist:
+        return HttpResponse('Telemetry probe %s is not registered, no data will be reported' % source_name)
+    return HttpResponse(retrieve_uptime(probe))
+
 def retrieve_uptime(probe):
     start_date = datetime.fromtimestamp(pull_probe_data(probe, 'startTime'))
     time_lapsed = str(datetime.now() - start_date).split('.')[0]
     return str(time_lapsed)
+
+#Work in progress for the get_live_data view
+def get_live_data(request):
+    if SOURCE_PARAM not in request.GET:
+        return HttpResponse('No probe name specified using %s parameter.' % SOURCE_PARAM)
+    source_name = request.GET[SOURCE_PARAM]
+    try:
+        probe = TelemetryProbe.objects.get(name=source_name)
+    except ObjectDoesNotExist:
+        return HttpResponse('Telemetry probe %s is not registered, no data will be reported' % source_name)
+
+    probe_data = {}
+    probe_data['uptime'] = retrieve_uptime(probe)
+    probe_data['temperature'] = '%.1f' % pull_probe_data(probe, 'temp')
+    probe_data['humidity'] = '%.1f' % pull_probe_data(probe, 'humidity')
+    probe_data['counter'] = pull_probe_data(probe, 'rCounter')
+    probe_data['lci1'] = pull_probe_data(probe, 'lci1')
+    probe_data['lci2'] = pull_probe_data(probe, 'lci2')
+    probe_data['readingCount'] = SensorReading.objects.filter(source=source_name).count()
+    return HttpResponse(json.dumps(probe_data))
 
 def export_csv(request):
     if request.method == 'POST':

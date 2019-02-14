@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<!--google-analytics tracking code -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-68799712-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!--google-analytics tracking code -->
+
+<html>
+		<head >
+			<link href="css/shift.css" rel="stylesheet">
+			<link href="css/bootstrap.css" rel="stylesheet">
+			<link rel="stylesheet" href="css/main.css">
+		</head>
+<body>
+
+<div class="jumbotron">
+		<div class="container">
+			<h1>IOT Photon Project</h1>
+			<p>IOT - Internet Of Things</p>
+    </div>
+			<br><br>
+			<div class="container">
+		    <h3>Basement Monitor Project:</h3>
+		    <ul style="list-style-type: none">
+			    <li><a href="/iotowl">Administration Page</a></li>
+			    <li><a href="/iotowl/dracocollector/readingReport?sourceName=Lyra">Telemetry Report</a></li>
+			    <li><a href="/iotowl/dracocollector/exportCSV">Export Data as CSV</a></li>
+		    </ul>
+	    </div>
+	</div>
+
+			<div class="learn-more">
+	      <div class="container">
+					<div class="row">
+						<div class="col-md-6">
+							<h3>About this Website</h3>
+							<p>This website showcases my own Photon based project. The project consists of a basement
+								leak monitoring system, that will notify me if any leaks occur in a specific area of my basement.
+								It uses push notifications sent using <a href="https://pushover.net">Pushover</a>
+								service. A secondary use is to send data from a connected DHT22 (temperature/humidity) sensor to
+								a Django written database application, for collection and analysis.</p>
+						</div>
+
+						<div class="col-md-6">
+							<h3>The Photon</h3>
+							<p>A Micro-controller created by Particle (formerly known as Spark). It is Wi-Fi capable, and this
+								means that your ideas can connect to the Internet. The programming language (based on C/C++)
+								is very easy to learn and use. Everything you need to know about how to
+								use the Photon can be found on the <a href="https://www.particle.io">Particle.io</a> website.</p>
+						</div>
+
+					</div>
+				</div>
+
+			</div>
+	</body>
+</html>

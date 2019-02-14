@@ -25,7 +25,7 @@ SECRET_KEY = 'mwbhe^)qo3ir5$b6%1!91px!8&^0&9&lpjm)rd^csh&x(otk_y'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['iotowl.duckdns.org']
 
 
 # Application definition
@@ -52,7 +52,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.security.SecurityMiddleware',
 )
 
-ROOT_URLCONF = 'dracoserver.urls'
+ROOT_URLCONF = 'iotowl.urls'
 
 TEMPLATES = [
     {
@@ -70,7 +70,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'dracoserver.wsgi.application'
+WSGI_APPLICATION = 'iotowl.wsgi.application'
 
 
 # Database

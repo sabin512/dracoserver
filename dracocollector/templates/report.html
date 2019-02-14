@@ -11,46 +11,88 @@
 
 {% extends "base.html" %}
 {% load humanize %}
-{% block title %}Photon Data Collector: Summary Report{% endblock %}
+{% block title %}Telemetry Data Report{% endblock %}
 {% block main_container %}
 
-<h2>Photon Data Report</h2>
-<table border="0">
-  <tr><td>Latest reading: </td><td><span class="dataValue">{{ latest_reading_date|date:"M j, Y H:i:s" }}</span></td><td>&nbsp;</td></tr>
-  <tr><td>Photon info: </td><td><span class="dataValue">Uptime:&nbsp;&nbsp;{{ uptime_data }}&nbsp;(hh:mm:ss)</span></td><td>&nbsp;</td></tr>
-<tr><td>&nbsp;</td><td><span class="dataValue">Temperature:&nbsp;&nbsp;{{ curr_temperature }}&#176;</span></td><td>&nbsp;</td></tr>
-<tr><td>&nbsp;</td><td><span class="dataValue">Humidity:&nbsp;&nbsp;{{ curr_humidity }}%</span></td><td>&nbsp;</td></tr>
+<script src="/js/getUptime.js"></script>
+
+<div class="container">
+
+<table style="width:100%">
+<tr>
+<td style="text-align:center"><h2>Telemetry Report - {{source_name}}</h2></td>
+</tr>
 </table>
 <br>
-  <table border="0", style="width:60%">
-	<tr>
-		<td>&nbsp;</td>
-		<th colspan="2">Last 48 hours</th>
-		<th colspan="2">All time stats</th>
-	</tr>
 
-		<tr>
-			<td>&nbsp;</td>
-			<td>Lowest</td>
-			<td>Highest</td>
-			<td>Lowest</td>
-			<td>Highest</td>
-		</tr>
+<!-- Banner division that contains "Probe Status" data in a table, centered on the screen -->
+<div class="center", style="margin: auto; width: 90%; border-style: solid; border-width: 1px; border-radius: 5px; border-color: #f7f7f7">
+    <table border="0", style="width:100%; margin-left:auto; margin-right:auto; text-align:center">
+      <tr>
+        <td><th colspan="6", style="text-align:center">PROBE STATUS</th></td>
+        <td><div id="status",style="text-align:right"></div></td>
+      </tr>
+        <tr>
+            <td>Last Entry: </td><td><span class="dataValue">{{ latest_reading_date|date:"M j, Y H:i:s" }}</span></td>
+            <td>Readings: </td><td><span id="readingCountSlot" class="dataValue">0</span></td>
+            <td>Uptime: </td><td><span class="dataValue" id="uptimeSlot">00:00:00&nbsp;(hh:mm:ss)</span></td>
+        </tr>
+    </table>
+  </div>
+<!-- Banner division that contains "Probe Status" data in a table, centered on the screen -->
 
-			<tr><td style="font-weight: bold">Temperature</td>
-				<td><span class="dataValue">{{ recent_min_temperature|floatformat:1 }}&#176;</span></td>
-				<td><span class="dataValue">{{ recent_max_temperature|floatformat:1 }}&#176;</span></td>
-			      	<td><span class="dataValue">{{ min_temperature|floatformat:1 }}&#176;</span></td>
-	    			<td><span class="dataValue">{{ max_temperature|floatformat:1 }}&#176;</span></td>
-			</tr>
+<br><br>
+<div class="center", style="margin: auto; width: 80%">
+<div class="row">
+    <div class="col-md-6">
+    <table border="0">
+        <tr><th colspan="2">Live Probe Data</th></tr>
+    <tr><td>Temperature:&nbsp;&nbsp;<span class="dataValue" id="tempSlot">0.0&deg;</span></td><td>&nbsp;</td></tr>
+    <tr><td>Humidity:&nbsp;&nbsp;<span class="dataValue" id="hmdSlot">0.0%</span></td><td>&nbsp;</td></tr>
+    <tr><td>Restart Counter:&nbsp;&nbsp;<span class="dataValue" id="counterSlot">0&nbsp;times</span></td><td>&nbsp;</td></tr>
+    <tr><td>Lci1 Reading:&nbsp;&nbsp;<span class="dataValue" id="lci1Slot">no data</span></td><td>&nbsp;</td></tr>
+    <tr><td>Lci2 Reading:&nbsp;&nbsp;<span class="dataValue" id="lci2Slot">no data</span></td><td>&nbsp;</td></tr>
+    </table>
+  </div>
 
-			<tr>
-				<td style="font-weight: bold">Humidity</td>
-				<td><span class="dataValue">{{ recent_min_humidity|floatformat:1 }}%</span></td>
-				<td><span class="dataValue">{{ recent_max_humidity|floatformat:1 }}%</span></td>
-				<td><span class="dataValue">{{ min_humidity|floatformat:1 }}%</span></td>
-				<td><span class="dataValue">{{ max_humidity|floatformat:1 }}%</span></td>
-			</tr>
-	</table>
+  <div class="col-md-6">
+    <table border="0", style="width:60%">
+  	<tr>
+  		<td>&nbsp;</td>
+  		<th colspan="2">Last 48 hours</th>
+  		<th colspan="2">All time stats</th>
+  	</tr>
+
+  		<tr>
+  			<td>&nbsp;</td><td>Lowest</td><td>Highest</td><td>Lowest</td><td>Highest</td>
+  		</tr>
+  			<tr><th style="font-weight: bold">Temperature</th>
+  				<td><span class="dataValue">{{ recent_min_temperature|floatformat:1 }}&deg;</span></td>
+  				<td><span class="dataValue">{{ recent_max_temperature|floatformat:1 }}&deg;</span></td>
+  			      	<td><span class="dataValue">{{ min_temperature|floatformat:1 }}&deg;</span></td>
+  	    			<td><span class="dataValue">{{ max_temperature|floatformat:1 }}&deg;</span></td>
+  			</tr>
+
+  			<tr>
+  				<th style="font-weight: bold">Humidity</th>
+  				<td><span class="dataValue">{{ recent_min_humidity|floatformat:1 }}%</span></td>
+  				<td><span class="dataValue">{{ recent_max_humidity|floatformat:1 }}%</span></td>
+  				<td><span class="dataValue">{{ min_humidity|floatformat:1 }}%</span></td>
+  				<td><span class="dataValue">{{ max_humidity|floatformat:1 }}%</span></td>
+  			</tr>
+  	</table>
+  </div>
+</div>
+</div>
+<br>
+<hr>
+<a href="/index.html", style="position: relative; left: 20px">Go Back</a>
+<p>&nbsp;</p>
+</div>
+<div class="more-data">
+</div>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="/js/status.js"></script>
 
 {% endblock %}

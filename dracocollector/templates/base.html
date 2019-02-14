@@ -1,29 +1,21 @@
 <html lang="en-us">
 	<head>
-		<title>{% block title %}Draco Collector{% endblock %}</title>
+		<title>{% block title %}Photon Data Collector{% endblock %}</title>
 		<link href="/css/shift.css" rel="stylesheet">
 		<link href="/css/bootstrap.css" rel="stylesheet">
-		<link href="/css/main.css" rel="stylesheet">
-		
-		<script type="text/javascript">window.__admin_media_prefix__ = "admin/";</script>
+		<link href="/css/report.css" rel="stylesheet">
+		<!-- link rel="stylesheet" type="text/css" href="/django_static/admin/css/base.css" />
+		<link rel="stylesheet" type="text/css" href="/django_static/admin/css/forms.css" / -->
+		<script type="text/javascript">window.__admin_media_prefix__ = "/django_static/admin/";</script>
+
+		<script type="text/javascript" src="/dracoserver/admin/jsi18n/"></script>
+		<script type="text/javascript" src="/django_static/admin/js/core.js"></script>
 		{{ form.media }}
 	</head>
 
 <body>
-	<div class="nav">
-		<div class="container">
-			<ul class="pull-left">
-				<li><a href="../../index.html">Home</a></li>
-				<li><a href="../../projects.html">Projects</a></li>
-				<li><a href="../../downloads.html">Downloads</a></li>
-				<li><a href="../../blog.html">Blog</a></li>
-			</ul>
-		</div>
-	</div>
-	<div class="jumbotron">
-		<div class="container">
+		<div class="report">
 			{% block main_container %}{% endblock %}
 		</div>
-	</div>
 </body>
 </html>
